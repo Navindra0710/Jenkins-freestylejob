@@ -2,7 +2,21 @@ pipeline {
     agent {
         label 'slave1'
     }
-    #without slave the above expression as " agent any"
+/*    
+without slave the above expression as " agent any"
+  Global environment variables
+   environment {
+       APP_NAME = 'MyApplication'
+        DEPLOY_ENV = 'production'
+    }
+
+
+ Automatically installs and adds tools to the PATH
+    tools {
+        maven 'maven-3.9' // The name configured in Global Tool Configuration
+        jdk   'jdk-21'    // The name configured in Global Tool Configuration
+    }    
+*/
     stages {
         stage ("git clone from repo") {
             steps {
