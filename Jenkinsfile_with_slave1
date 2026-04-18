@@ -2,6 +2,7 @@ pipeline {
     agent {
         label 'slave1'
     }
+    #without slave the above expression as " agent any"
     stages {
         stage ("git clone from repo") {
             steps {
