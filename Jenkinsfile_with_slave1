@@ -1,0 +1,25 @@
+pipeline {
+    agent {
+        label 'slave1'
+    }
+    stages {
+        stage ("git clone from repo") {
+            steps {
+                echo "We are cloning the code from repo"
+                git branch:'main', url:'https://github.com/Navindra0710/Jenkins-freestylejob.git'
+            }
+        }
+        stage ("Build step") {
+            steps {
+                echo "build the artifact"
+                sh 'mvn clean install'
+            }
+        }
+        stage ("deploy to tomcat") {
+            steps {
+                echo "deploy to tomcat server"
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://98.94.8.164:8080/')], contextPath: 'MC-APP', onFailure: false, war: '*/*.war'
+                }
+        }
+    }
+}
