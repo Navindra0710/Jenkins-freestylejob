@@ -1,0 +1,56 @@
+/* Jenkins pipeline code for try catch error check */
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('CLONE GITHUB CODE') {
+            steps {
+                script {
+                    try {
+                        echo 'In this stage code will be cloned'
+                        git branch: 'master', url: 'https://github.com/devopstraininghub/mindcircuit16d.git'
+                    } catch (Exception e) {
+                        echo "Stage 1 failed: ${e.message}"
+                    }
+                }
+            }
+        }
+
+        stage('BUILDING THE CODE') {
+            steps {
+                script {
+                    try {
+                        echo 'In this stage code will be built and mvn artifact will be generated'
+                        sh 'mvn clean install'
+                    } catch (Exception e) {
+                        echo "Stage 2 failed: ${e.message}"
+                    }
+                }
+            }
+        }
+
+        stage('DEPLOY') {
+            steps {
+                script {
+                    try {
+                        echo 'In this stage .war artifact will be deployed on to Tomcat'
+                        deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://54.91.227.106:8081/')], 
+                               contextPath: 'devops-app', 
+                               war: '**/*.war'
+                    } catch (Exception e) {
+                        echo "Stage 3 failed: ${e.message}"
+                    }
+                }
+            }
+        }
+    }
+}
